@@ -1,8 +1,6 @@
 from fastapi import FastAPI
-from .routers import auth
 from .db import init_db
-
-
+from .routers.auth import router as auth_router
 
 app = FastAPI()
 
@@ -10,7 +8,9 @@ app = FastAPI()
 def on_startup():
     init_db()
 
-app.include_router(auth.router)
+# **This line makes /auth/signup live**
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
+
 
 @app.get("/")
 async def read_root():
