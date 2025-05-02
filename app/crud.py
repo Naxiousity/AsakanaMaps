@@ -20,3 +20,6 @@ def get_user_by_email(db: Session, email: str) -> User | None:
     stmt = select(User).where(User.email == email)
     return db.exec(stmt).first()
 
+def verify_password(plainpassword: str, hashedpassword: str) -> bool:
+    return pwd_context.verify(plainpassword, hashedpassword)
+
