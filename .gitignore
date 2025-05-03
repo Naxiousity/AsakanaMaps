@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+.env
+
+# Virtualenv
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+
+CHEATSHEET.py

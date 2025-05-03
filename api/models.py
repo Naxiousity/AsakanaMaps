@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+
 import uuid
 
 def generate_invite_code():
@@ -42,3 +44,15 @@ class Membership(models.Model):
         related_name='membership_entries'
     )
     joined_at = models.DateTimeField(auto_now_add=True)
+
+
+class LocationUpdate(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
+                             related_name='locations')
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    timestamp = models.DateTimeField(default=timezone.now)
+                                     
+    class Meta:
+        get_latest_by = 'timestamp'

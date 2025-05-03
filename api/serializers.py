@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Circle
+from .models import Circle, LocationUpdate
 
 User = get_user_model()
 
@@ -22,3 +22,12 @@ class CircleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Circle
         fields = ['id', 'name', 'invite_code']
+
+
+class LocationUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocationUpdate
+        fields = ['id', 'latitude', 'longitude', 'timestamp']
+        read_only_fields = ['id', 'timestamp']
+
+    

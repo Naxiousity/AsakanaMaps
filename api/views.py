@@ -2,8 +2,8 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import Circle
-from .serializers import UserSignupSerializer, CircleSerializer
+from .models import Circle, LocationUpdate
+from .serializers import UserSignupSerializer, CircleSerializer, LocationUpdateSerializer
 
 
 class SignupView(generics.CreateAPIView):
@@ -36,3 +36,30 @@ class JoinCircleView(generics.GenericAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     
+class LocationUpdateView(generics.CreateAPIView):
+    """POST /api/auth/locations/update/"""
+    serializer_class = LocationUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class LatestLocationsView(generics.ListAPIView):
+    """GET /api/auth/locations/latest/"""
+    serializer_class = LocationUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        circles = user.circles.all()
+        members = set(u for c in circles for u in c.members.all())
+
+        queryset = (
+            LocationUpdate.objects
+            .filter(user_in=members)
+            .order_by('user', '-timestamp')
+            .distinct('user')
+        )
+        
+        return queryset
